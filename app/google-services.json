@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1081895172743",
+    "firebase_url": "https://paygetping.firebaseio.com",
+    "project_id": "paygetping",
+    "storage_bucket": "paygetping.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1081895172743:android:4970e28f1d9130a7",
+        "android_client_info": {
+          "package_name": "com.example.dipendra.paygetping"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1081895172743-bgfek5un2o33khbeuqkk04sih3jgt94k.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.dipendra.paygetping",
+            "certificate_hash": "abc3f477e79c4a8ec8eaf3bc701d28ead6a942c6"
+          }
+        },
+        {
+          "client_id": "1081895172743-aho7dkdbl5rojc3jvtg2cascg57o0f8e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCCLuUXemJ5moddHIuuzLxeWUuy4i96fWI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1081895172743-aho7dkdbl5rojc3jvtg2cascg57o0f8e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
