@@ -5,5 +5,5 @@ package com.example.dipendra.paygetping.utils;
  */
 
 public class Constants {
-    final static public String BASE_URL = "https://paygetping.firebaseio.com/";
+    final static public String BASE_URL = "https://paygetping-46e81.firebaseio.com/";
 }
