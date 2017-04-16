@@ -8,11 +8,13 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.dipendra.paygetping.login.LoginActivity;
+import com.example.dipendra.paygetping.login.RegisterActivity;
 import com.example.dipendra.paygetping.models.User;
+import com.example.dipendra.paygetping.models.WalletListWrapper;
+import com.example.dipendra.paygetping.utils.Constants;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -21,7 +23,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 /**
@@ -34,6 +35,16 @@ public class BaseActivity extends AppCompatActivity {
     protected SharedPreferences sp;
     protected FirebaseAuth.AuthStateListener authStateListener;
     protected User user;
+
+    public User getUser() {
+        return user;
+    }
+
+    public WalletListWrapper getCurrentList() {
+        return currentList;
+    }
+
+    protected WalletListWrapper currentList;
     protected DatabaseReference reference;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +54,8 @@ public class BaseActivity extends AppCompatActivity {
         authStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = auth.getCurrentUser();
-                if(user == null){
+                FirebaseUser firebaseUser = auth.getCurrentUser();
+                if(firebaseUser == null){
                     getToLoginScreen();
                 }
                 else{
@@ -57,17 +68,30 @@ public class BaseActivity extends AppCompatActivity {
     private void initialize(){
         sp = PreferenceManager.getDefaultSharedPreferences(this);
         user = new User();
+        currentList = new WalletListWrapper();
     }
     private void getToLoginScreen(){
         Intent i = new Intent(BaseActivity.this, LoginActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(i);
     }
-    private void readSharedPreferences(){
+    protected void readSharedPreferences(){
         sp = PreferenceManager.getDefaultSharedPreferences(this);
         user.setEncodedEmail(sp.getString("encodedEmail", null));
         user.setName(sp.getString("username", null));
-        Toast.makeText(this, "You are:"+ user.getName()+user.getEncodedEmail(), Toast.LENGTH_LONG).show();
+        String nameOfTheCurrentList = sp.getString("currentWalletName", null);
+        if(nameOfTheCurrentList == null && !(this instanceof WalletsActivity)){
+            Intent i = new Intent(this, WalletsActivity.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(i);
+        }
+        else{
+            currentList.setName(nameOfTheCurrentList);
+        }
+        currentList.setOwner(sp.getString("currentWalletOwner", null));
+        currentList.setPushId(sp.getString("currentWallet", null));
+
+       // Toast.makeText(this, "You are:"+ user.getName()+user.getEncodedEmail(), Toast.LENGTH_LONG).show();
     }
     @Override
     protected void onStart() {
@@ -78,10 +102,11 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+    protected void onResume() {
+        super.onResume();
     }
+
+
 
     @Override
     protected void onStop() {
@@ -108,7 +133,7 @@ public class BaseActivity extends AppCompatActivity {
                 }
                 else{
                     final SharedPreferences.Editor ed = sp.edit();
-                    reference = FirebaseDatabase.getInstance().getReference().child("users").child(mail);
+                    reference = Constants.getDatabase().getReference().child("users").child(mail);
                     reference.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -132,22 +157,17 @@ public class BaseActivity extends AppCompatActivity {
             }
         });
     }
-    private void signOutUser(){
+    protected void signOutUser(){
         auth.signOut();
         SharedPreferences.Editor editor = sp.edit();
         editor.putString("encodedEmail", null);
         editor.putString("username", null);
+        editor.putString("currentWallet", null);
+        editor.putString("currentWalletName", null);
+        editor.putString("currentWalletOwner", null);
         editor.commit();
         user = null;
         getToLoginScreen();
     }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.logout) {
-            signOutUser();
-        }
 
-        return super.onOptionsItemSelected(item);
-    }
 }

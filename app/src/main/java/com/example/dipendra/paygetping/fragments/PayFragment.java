@@ -1,4 +1,4 @@
-package com.example.dipendra.paygetping;
+package com.example.dipendra.paygetping.fragments;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -12,6 +12,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.example.dipendra.paygetping.R;
+
 
 public class PayFragment extends Fragment implements View.OnClickListener {
     public PayFragment() {
@@ -23,6 +25,7 @@ public class PayFragment extends Fragment implements View.OnClickListener {
         View v =  inflater.inflate(R.layout.fragment_pay, container, false);
         FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
         fab.setOnClickListener(this);
+
         return v;
     }
 

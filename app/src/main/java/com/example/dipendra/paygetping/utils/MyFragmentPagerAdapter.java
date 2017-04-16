@@ -1,4 +1,4 @@
-package com.example.dipendra.paygetping;
+package com.example.dipendra.paygetping.utils;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

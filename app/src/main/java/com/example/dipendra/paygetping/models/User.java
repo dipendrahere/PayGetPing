@@ -2,6 +2,8 @@ package com.example.dipendra.paygetping.models;
 
 import com.google.firebase.database.IgnoreExtraProperties;
 
+import java.util.ArrayList;
+
 /**
  * Created by dipendra on 06/04/17.
  */
@@ -9,7 +11,7 @@ import com.google.firebase.database.IgnoreExtraProperties;
 public class User {
     private String name;
     private String encodedEmail;
-
+    private ArrayList<WalletListWrapper> lists;
     public String getName() {
         return name;
     }
