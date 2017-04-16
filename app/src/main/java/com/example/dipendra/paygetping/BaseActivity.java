@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.dipendra.paygetping.wallet.WalletsActivity;
 import com.example.dipendra.paygetping.login.LoginActivity;
 import com.example.dipendra.paygetping.login.RegisterActivity;
 import com.example.dipendra.paygetping.models.User;

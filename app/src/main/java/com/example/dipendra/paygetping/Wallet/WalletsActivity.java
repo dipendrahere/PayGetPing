@@ -1,5 +1,6 @@
-package com.example.dipendra.paygetping;
+package com.example.dipendra.paygetping.wallet;
 
+import android.app.ActivityOptions;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,7 +10,9 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -17,6 +20,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.dipendra.paygetping.BaseActivity;
+import com.example.dipendra.paygetping.MainActivity;
+import com.example.dipendra.paygetping.R;
 import com.example.dipendra.paygetping.models.Wallet;
 import com.example.dipendra.paygetping.models.WalletListWrapper;
 import com.example.dipendra.paygetping.utils.Constants;
@@ -57,6 +63,8 @@ public class WalletsActivity extends BaseActivity implements AdapterView.OnItemC
     private void initialize() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         fab = (FloatingActionButton) findViewById(R.id.fabwallet);
         fab.setOnClickListener(this);
         listview = (ListView) findViewById(R.id.wallet_list);
@@ -83,7 +91,9 @@ public class WalletsActivity extends BaseActivity implements AdapterView.OnItemC
         //TODO: intent to add friends for the list must come here
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
+        Bundle options =
+                ActivityOptions.makeCustomAnimation(this, R.xml.left, R.xml.right).toBundle();
+        startActivity(intent, options);
     }
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -95,46 +105,62 @@ public class WalletsActivity extends BaseActivity implements AdapterView.OnItemC
         if(view.getId() == R.id.fabwallet){
             View v = LinearLayout.inflate(this, R.layout.new_wallet_dialog, null);
             final EditText ed = (EditText) v.findViewById(R.id.new_wallet_name);
+            ed.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                    if (actionId == EditorInfo.IME_ACTION_DONE || keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
+                        onPositiveClick(ed);
+                    }
+                    return true;
+                }
+            });
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setView(v);
-            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            builder.setPositiveButton("Create", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    progressDialog = new ProgressDialog(WalletsActivity.this);
-                    progressDialog.setMessage("Creating.. Wait!");
-                    progressDialog.setIndeterminate(true);
-                    progressDialog.setCancelable(false);
-                    progressDialog.show();
-                    DatabaseReference ref = Constants.getDatabase().getReference();
-                    final String key = ref.child("wallets").push().getKey();
-                    Wallet w = new Wallet();
-                    w.setOwnerID(user.getEncodedEmail());
-                    w.setOwner(user.getName());
-                    w.setName(ed.getText().toString());
-                    Map<String, Object> map = new HashMap<String, Object>();
-                    map.put("/wallets/"+key, w.toMap());
-                    wrapper = new WalletListWrapper(w);
-                    wrapper.setPushId(key);
-                    map.put("/users/"+user.getEncodedEmail()+"/lists/"+key, wrapper.toMap());
-                    ref.updateChildren(map).addOnCompleteListener(WalletsActivity.this, new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if(task.isSuccessful()) {
-                                progressDialog.hide();
-                                Constants.getDatabase().getReference().child("wallets").child(key).child("sharedWith").child(user.getEncodedEmail()).setValue(user);
-                                updateAndIntent(wrapper);
-                            }
-                            else{
-                                progressDialog.hide();
-                                Toast.makeText(WalletsActivity.this, "Some Error Occured", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-
-                    });
+                    onPositiveClick(ed);
                 }
             });
             AlertDialog dialog = builder.create();
             dialog.show();
+        }
+    }
+    private void onPositiveClick(EditText ed){
+        if(ed.getText().toString().length()<=0){
+            Toast.makeText(WalletsActivity.this, "Empty Name Not Allowed!", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            progressDialog = new ProgressDialog(WalletsActivity.this);
+            progressDialog.setMessage("Creating.. Wait!");
+            progressDialog.setIndeterminate(true);
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+            DatabaseReference ref = Constants.getDatabase().getReference();
+            final String key = ref.child("wallets").push().getKey();
+            Wallet w = new Wallet();
+            w.setOwnerID(user.getEncodedEmail());
+            w.setOwner(user.getName());
+            w.setName(ed.getText().toString());
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("/wallets/" + key, w.toMap());
+            wrapper = new WalletListWrapper(w);
+            wrapper.setPushId(key);
+            map.put("/users/" + user.getEncodedEmail() + "/lists/" + key, wrapper.toMap());
+            ref.updateChildren(map).addOnCompleteListener(WalletsActivity.this, new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()) {
+                        progressDialog.hide();
+                        Constants.getDatabase().getReference().child("wallets").child(key).child("sharedWith").child(user.getEncodedEmail()).setValue(user);
+                        updateAndIntent(wrapper);
+                    } else {
+                        progressDialog.hide();
+                        Toast.makeText(WalletsActivity.this, "Some Error Occured", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+            });
         }
     }
 }

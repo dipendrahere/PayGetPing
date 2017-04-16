@@ -9,7 +9,7 @@
         app:showAsAction="never" />
     <item
         android:id="@+id/add_user_to_list"
-        android:icon="@drawable/ic_group_add_black_24dp"
+        android:icon="@drawable/ic_share_black_24dp"
         app:showAsAction="always"
         android:title="Add User to List" />
 

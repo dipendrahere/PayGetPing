@@ -11,13 +11,19 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.example.dipendra.paygetping.AddFriendsActivity"
+    tools:context="com.example.dipendra.paygetping.managingFriends.AddFriendsActivity"
     tools:showIn="@layout/activity_add_friends">
-
-    <EditText
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    <android.support.design.widget.TextInputEditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/searchfriends"/>
+        android:inputType="textPersonName"
+        android:id="@+id/searchfriends"
+        android:imeOptions="actionDone|flagNoExtractUi"
+        android:hint="Enter Your Friend's Name"/>
+    </android.support.design.widget.TextInputLayout>
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"

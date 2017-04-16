@@ -6,9 +6,9 @@
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_main">MainActivity</string>
-    <string name="title_activity_wallets">Wallets</string>
-    <string name="title_activity_friend">Friend</string>
-    <string name="title_activity_add_friends">AddFriendsActivity</string>
-    <string name="title_activity_add_user_to_list">AddUserToList</string>
-    <string name="title_activity_search_friend">SearchFriendActivity</string>
+    <string name="title_activity_wallets">Choose a Wallet</string>
+    <string name="title_activity_friend">Your Friends</string>
+    <string name="title_activity_add_friends">Search Your Friend</string>
+    <string name="title_activity_add_user_to_list">Friends Already Added</string>
+    <string name="title_activity_search_friend">Find Your Friend</string>
 </resources>

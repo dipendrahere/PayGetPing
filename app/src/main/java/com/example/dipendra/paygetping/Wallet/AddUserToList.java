@@ -1,5 +1,6 @@
-package com.example.dipendra.paygetping;
+package com.example.dipendra.paygetping.wallet;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -10,6 +11,8 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.dipendra.paygetping.BaseActivity;
+import com.example.dipendra.paygetping.R;
 import com.example.dipendra.paygetping.models.User;
 import com.example.dipendra.paygetping.utils.Constants;
 import com.firebase.ui.database.FirebaseListAdapter;
@@ -68,7 +71,8 @@ public class AddUserToList extends BaseActivity implements View.OnClickListener 
     private void initialize() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_add_to_user_list);
         fab.setOnClickListener(this);
         listView = (ListView) findViewById(R.id.sharedWith);
@@ -87,7 +91,9 @@ public class AddUserToList extends BaseActivity implements View.OnClickListener 
     public void onClick(View view) {
         if(view.getId() == R.id.fab_add_to_user_list){
             Intent i = new Intent(AddUserToList.this, SelectFriendActivity.class);
-            startActivity(i);
+            Bundle options =
+                    ActivityOptions.makeCustomAnimation(this, R.xml.left, R.xml.right).toBundle();
+            startActivity(i, options);
         }
     }
 }

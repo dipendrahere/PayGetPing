@@ -2,13 +2,18 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <EditText
+<android.support.design.widget.TextInputLayout
+    android:layout_width="match_parent"
+    android:layout_margin="10dp"
+    android:layout_height="wrap_content">
+    <android.support.design.widget.TextInputEditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
         android:text=""
+        android:imeOptions="actionDone|flagNoExtractUi"
         android:ems="10"
         android:id="@+id/new_wallet_name"
         android:hint="New Wallet Name"/>
+</android.support.design.widget.TextInputLayout>
 </LinearLayout>

@@ -1,5 +1,6 @@
-package com.example.dipendra.paygetping;
+package com.example.dipendra.paygetping.managingFriends;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,6 +12,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.dipendra.paygetping.BaseActivity;
+import com.example.dipendra.paygetping.R;
 import com.example.dipendra.paygetping.models.User;
 import com.example.dipendra.paygetping.utils.Constants;
 import com.firebase.ui.database.FirebaseListAdapter;
@@ -59,6 +62,8 @@ public class FriendsActivity extends BaseActivity implements View.OnClickListene
         fab.setOnClickListener(this);
         readSharedPreferences();
         listView = (ListView) findViewById(R.id.listfriends);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
 
     @Override
@@ -72,7 +77,9 @@ public class FriendsActivity extends BaseActivity implements View.OnClickListene
     public void onClick(View view) {
         if(view.getId() == R.id.fabfriend){
             Intent i = new Intent(FriendsActivity.this, AddFriendsActivity.class);
-            startActivity(i);
+            Bundle options =
+                    ActivityOptions.makeCustomAnimation(this, R.xml.left, R.xml.right).toBundle();
+            startActivity(i, options);
         }
     }
 }

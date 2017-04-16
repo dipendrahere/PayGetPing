@@ -1,4 +1,4 @@
-package com.example.dipendra.paygetping;
+package com.example.dipendra.paygetping.wallet;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -7,16 +7,18 @@ import android.text.TextWatcher;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.example.dipendra.paygetping.BaseActivity;
+import com.example.dipendra.paygetping.R;
 import com.example.dipendra.paygetping.models.User;
-import com.example.dipendra.paygetping.utils.AddFriendAdapter;
 import com.example.dipendra.paygetping.utils.Constants;
+import com.example.dipendra.paygetping.utils.FriendAddToListAdapter;
 import com.google.firebase.database.Query;
 
-public class AddFriendsActivity extends BaseActivity {
+public class SelectFriendActivity extends BaseActivity {
     private EditText autoCompleteTextView;
     private String searchString;
     private ListView addedUsers;
-    private AddFriendAdapter adapter;
+    private FriendAddToListAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,9 +45,9 @@ public class AddFriendsActivity extends BaseActivity {
                     addedUsers.setAdapter(null);
                 }
                 else{
-                    Query q = Constants.getDatabase().getReference().child("users").
+                    Query q = Constants.getDatabase().getReference().child("userFriends").child(user.getEncodedEmail()).
                             orderByChild("encodedEmail").startAt(searchString).endAt(searchString+"~");
-                    adapter = new AddFriendAdapter(AddFriendsActivity.this, User.class, R.layout.row_add_friends, q , AddFriendsActivity.this.user.getEncodedEmail());
+                    adapter = new FriendAddToListAdapter(SelectFriendActivity.this, User.class, R.layout.row_add_friends, q , SelectFriendActivity.this.user.getEncodedEmail());
                     addedUsers.setAdapter(adapter);
                 }
             }
@@ -55,6 +57,8 @@ public class AddFriendsActivity extends BaseActivity {
     private void initialize() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         autoCompleteTextView = (EditText) findViewById(R.id.searchfriends);
         addedUsers = (ListView) findViewById(R.id.added_users);
     }

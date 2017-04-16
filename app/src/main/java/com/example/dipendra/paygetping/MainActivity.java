@@ -17,6 +17,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.dipendra.paygetping.managingFriends.FriendsActivity;
+import com.example.dipendra.paygetping.wallet.AddUserToList;
+import com.example.dipendra.paygetping.wallet.WalletsActivity;
 import com.example.dipendra.paygetping.fragments.GetFragment;
 import com.example.dipendra.paygetping.fragments.PayFragment;
 import com.example.dipendra.paygetping.utils.MyFragmentPagerAdapter;
