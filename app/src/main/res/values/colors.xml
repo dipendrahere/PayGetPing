@@ -5,4 +5,7 @@
     <color name="colorAccent">#004D40</color>
     <color name="gray">#dddddd</color>
     <color name="white">#ffffff</color>
+    <color name="trans">#00000000</color>
+    <color name="backdrawer">#33000D00</color>
+    <color name="darkgray">#bababa</color>
 </resources>

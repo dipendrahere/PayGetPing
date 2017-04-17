@@ -55,8 +55,17 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                         user.setName(username.getText().toString());
                         user.setEncodedEmail(usermail.getText().toString().replace(".",","));
                         reference = Constants.getDatabase().getReference().child("users").child(user.getEncodedEmail());
-                        reference.setValue(user);
-                        progressDialog.hide();
+                        reference.setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if(task.isSuccessful()){
+                                    progressDialog.hide();
+                                }
+                                else{
+                                    Toast.makeText(RegisterActivity.this, "Network failed us!", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
                         signin(user.getEncodedEmail().replace(",","."), password.getText().toString());
                     }
                 }

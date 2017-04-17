@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -23,13 +24,17 @@ import android.widget.Toast;
 import com.example.dipendra.paygetping.BaseActivity;
 import com.example.dipendra.paygetping.MainActivity;
 import com.example.dipendra.paygetping.R;
+import com.example.dipendra.paygetping.login.LoginActivity;
 import com.example.dipendra.paygetping.models.Wallet;
 import com.example.dipendra.paygetping.models.WalletListWrapper;
 import com.example.dipendra.paygetping.utils.Constants;
 import com.firebase.ui.database.FirebaseListAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,18 +51,64 @@ public class WalletsActivity extends BaseActivity implements AdapterView.OnItemC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wallets);
         initialize();
-        Toast.makeText(this, "Please Choose a wallet to proceed further!", Toast.LENGTH_SHORT).show();
-        this.reference = Constants.getDatabase().getReference().child("users").child(user.getEncodedEmail()).child("lists");
-        adapter = new FirebaseListAdapter<WalletListWrapper>(this, WalletListWrapper.class, R.layout.wallet_list, reference) {
-            @Override
-            protected void populateView(View view, WalletListWrapper walletListWrapper, int i) {
-                wrapperList.add(walletListWrapper);
-                ((TextView)view.findViewById(R.id.wallet_list_name)).setText(walletListWrapper.getName());
-                ((TextView)view.findViewById(R.id.wallet_list_owner)).setText(walletListWrapper.getOwner());
-            }
-        };
-        listview.setAdapter(adapter);
-        listview.setOnItemClickListener(this);
+        //Toast.makeText(this, "Please Choose a wallet to proceed further!", Toast.LENGTH_SHORT).show();
+        if(user.getEncodedEmail()==null){
+            Intent i = new Intent(WalletsActivity.this, LoginActivity.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(i);
+            finish();
+        }
+         else {
+            this.reference = Constants.getDatabase().getReference().child("users").child(user.getEncodedEmail()).child("lists");
+            progressDialog.setMessage("Refreshing..");
+            progressDialog.show();
+            reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.getValue() == null){
+                        Toast.makeText(WalletsActivity.this, "Please add a wallet!", Toast.LENGTH_SHORT).show();
+                        progressDialog.hide();
+                    }
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Toast.makeText(WalletsActivity.this, "Network Failed us!", Toast.LENGTH_SHORT).show();
+                    progressDialog.hide();
+                }
+            });
+            adapter = new FirebaseListAdapter<WalletListWrapper>(this, WalletListWrapper.class, R.layout.wallet_list, reference) {
+                @Override
+                protected void populateView(View view, WalletListWrapper walletListWrapper, int i) {
+                    WalletsActivity.this.findViewById(R.id.emptynotifier).setVisibility(View.GONE);
+                    wrapperList.add(walletListWrapper);
+                    ((TextView) view.findViewById(R.id.wallet_list_name)).setText(walletListWrapper.getName());
+                    ((TextView) view.findViewById(R.id.wallet_list_owner)).setText("Owner: " + walletListWrapper.getOwner());
+                }
+            };
+            adapter.registerDataSetObserver(new DataSetObserver() {
+                @Override
+                public void onChanged() {
+                    super.onChanged();
+                    progressDialog.hide();
+                }
+
+                @Override
+                public void onInvalidated() {
+                    super.onInvalidated();
+                    progressDialog.hide();
+                    Toast.makeText(WalletsActivity.this, "Unsuccessful!", Toast.LENGTH_SHORT).show();
+                }
+            });
+            listview.setAdapter(adapter);
+            listview.setOnItemClickListener(this);
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+
     }
 
     private void initialize() {
@@ -84,11 +135,11 @@ public class WalletsActivity extends BaseActivity implements AdapterView.OnItemC
         SharedPreferences.Editor editor = sp.edit();
         editor.putString("currentWallet", w.getPushId());
         editor.putString("currentWalletName", w.getName());
+        editor.putString("currentWalletOwnerID", w.getOwnerID());
         editor.putString("currentWalletOwner", w.getOwner());
         editor.commit();
+        currentList = w;
 
-
-        //TODO: intent to add friends for the list must come here
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
         Bundle options =
@@ -151,9 +202,21 @@ public class WalletsActivity extends BaseActivity implements AdapterView.OnItemC
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     if (task.isSuccessful()) {
-                        progressDialog.hide();
-                        Constants.getDatabase().getReference().child("wallets").child(key).child("sharedWith").child(user.getEncodedEmail()).setValue(user);
-                        updateAndIntent(wrapper);
+                        Constants.getDatabase().getReference().child("wallets").child(key).child("sharedWith").child(user.getEncodedEmail()).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if(task.isSuccessful()){
+                                    progressDialog.hide();
+                                    Toast.makeText(WalletsActivity.this, "Done!", Toast.LENGTH_SHORT).show();
+                                    updateAndIntent(wrapper);
+                                }
+                                else{
+
+                                    Toast.makeText(WalletsActivity.this, "Some Error Occured", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+
                     } else {
                         progressDialog.hide();
                         Toast.makeText(WalletsActivity.this, "Some Error Occured", Toast.LENGTH_SHORT).show();

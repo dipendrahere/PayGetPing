@@ -1,6 +1,6 @@
 package com.example.dipendra.paygetping.models;
 
-import com.google.firebase.database.Exclude;
+import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * Created by dipendra on 15/04/17.
  */
-
+@IgnoreExtraProperties
 public class Wallet {
     private String name;
     private String owner;
@@ -32,7 +32,7 @@ public class Wallet {
     public String getName() {
         return name;
     }
-    @Exclude
+
     public void setName(String name) {
         this.name = name;
     }

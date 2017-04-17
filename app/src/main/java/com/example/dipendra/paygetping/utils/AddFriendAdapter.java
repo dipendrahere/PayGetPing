@@ -1,14 +1,19 @@
 package com.example.dipendra.paygetping.utils;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.dipendra.paygetping.BaseActivity;
 import com.example.dipendra.paygetping.R;
 import com.example.dipendra.paygetping.models.User;
 import com.firebase.ui.database.FirebaseListAdapter;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -30,6 +35,7 @@ public class AddFriendAdapter extends FirebaseListAdapter<User> {
 
     @Override
     protected void populateView(View view, final User user, int i) {
+        activity.findViewById(R.id.nomatch).setVisibility(View.GONE);
         TextView name = (TextView) view.findViewById(R.id.added_friend_name);
         TextView email = (TextView) view.findViewById(R.id.added_friend_mail);
         email.setText(user.getEncodedEmail().replace(",","."));
@@ -50,11 +56,22 @@ public class AddFriendAdapter extends FirebaseListAdapter<User> {
                                 Toast.makeText(activity, "Already Added!", Toast.LENGTH_SHORT).show();
                             }
                             else{
+                                final ProgressDialog progressDialog = new ProgressDialog((activity));
+                                progressDialog.setMessage("Adding.. ");
+                                progressDialog.setIndeterminate(true);
+                                progressDialog.setCancelable(false);
+                                progressDialog.show();
                                 User u = new User();
                                 u.setName(user.getName());
                                 u.setEncodedEmail(user.getEncodedEmail());
                                 ref.setValue(u);
-                                activity.finish();
+                                Constants.getDatabase().getReference().child("userFriends").child(user.getEncodedEmail()).child(((BaseActivity)activity).getUser().getEncodedEmail()).setValue(((BaseActivity)activity).getUser()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                       progressDialog.hide();
+                                        activity.finish();
+                                    }
+                                });
                             }
                         }
 

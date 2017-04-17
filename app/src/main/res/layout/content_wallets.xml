@@ -12,7 +12,15 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.example.dipendra.paygetping.wallet.WalletsActivity"
     tools:showIn="@layout/activity_wallets">
-
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/emptynotifier"
+        android:textColor="@color/darkgray"
+        android:textSize="50dp"
+        android:gravity="center"
+        android:text="Empty!\n Add a wallet"
+        android:textAlignment="center"/>
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"

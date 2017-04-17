@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
 
@@ -43,12 +44,19 @@ public class SelectFriendActivity extends BaseActivity {
                 searchString = autoCompleteTextView.getText().toString().toLowerCase();
                 if(searchString.equals("") || searchString.length() < 2){
                     addedUsers.setAdapter(null);
+                    findViewById(R.id.nomatch).setVisibility(View.VISIBLE);
                 }
                 else{
                     Query q = Constants.getDatabase().getReference().child("userFriends").child(user.getEncodedEmail()).
                             orderByChild("encodedEmail").startAt(searchString).endAt(searchString+"~");
                     adapter = new FriendAddToListAdapter(SelectFriendActivity.this, User.class, R.layout.row_add_friends, q , SelectFriendActivity.this.user.getEncodedEmail());
                     addedUsers.setAdapter(adapter);
+                    if(adapter.getCount() == 0){
+                        findViewById(R.id.nomatch).setVisibility(View.VISIBLE);
+                    }
+                    else{
+                        findViewById(R.id.nomatch).setVisibility(View.GONE);
+                    }
                 }
             }
         });

@@ -12,17 +12,15 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
+import android.widget.ListView;
 
-import com.example.dipendra.paygetping.managingFriends.FriendsActivity;
-import com.example.dipendra.paygetping.wallet.AddUserToList;
-import com.example.dipendra.paygetping.wallet.WalletsActivity;
 import com.example.dipendra.paygetping.fragments.GetFragment;
 import com.example.dipendra.paygetping.fragments.PayFragment;
+import com.example.dipendra.paygetping.managingFriends.FriendsActivity;
 import com.example.dipendra.paygetping.utils.MyFragmentPagerAdapter;
+import com.example.dipendra.paygetping.wallet.WalletsActivity;
 
 import java.util.ArrayList;
 
@@ -31,19 +29,23 @@ public class MainActivity extends BaseActivity
 
     private MyFragmentPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
+    private ListView mDrawerList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+        readSharedPreferences();
         setContentView(R.layout.activity_main);
         initialize();
-
-        Toast.makeText(this, "Your wallet "+currentList.getName()+" owner "+currentList.getOwner()+" pushId "+currentList.getPushId(), Toast.LENGTH_SHORT).show();
+       // Toast.makeText(this, "Your wallet "+currentList.getName()+" owner "+currentList.getOwner()+" pushId "+currentList.getPushId(), Toast.LENGTH_SHORT).show();
     }
     private void populate(ArrayList<Fragment> arrayList){
         arrayList.add(new PayFragment());
         arrayList.add(new GetFragment());
+
     }
+
     private void initialize(){
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -61,6 +63,7 @@ public class MainActivity extends BaseActivity
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
+        drawer.setScrimColor(getResources().getColor(R.color.backdrawer));
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -72,7 +75,6 @@ public class MainActivity extends BaseActivity
         mViewPager.setAdapter(mSectionsPagerAdapter);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
-        readSharedPreferences();
     }
     @Override
     public void onBackPressed() {
@@ -83,26 +85,9 @@ public class MainActivity extends BaseActivity
             super.onBackPressed();
         }
     }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+    public void closedrawer(View v){
+        onBackPressed();
     }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if(id == R.id.logout){
-            signOutUser();
-        }
-        else if(id == R.id.add_user_to_list){
-            Intent i = new Intent(MainActivity.this, AddUserToList.class);
-            startActivity(i);
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -113,17 +98,10 @@ public class MainActivity extends BaseActivity
         if (id == R.id.nav_camera) {
             i = new Intent(MainActivity.this, WalletsActivity.class);
             startActivity(i);
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
+        }
+         else if (id == R.id.nav_share) {
             i = new Intent(MainActivity.this, FriendsActivity.class);
             startActivity(i);
-        } else if (id == R.id.nav_send) {
-
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
