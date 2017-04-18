@@ -5,6 +5,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
+import com.example.dipendra.paygetping.R;
 import com.google.firebase.database.FirebaseDatabase;
 
 /**
@@ -21,7 +22,8 @@ public class Constants {
         }
         return database;
     }
-    public static int menu;
+
+    public static int menu = R.menu.menu_main;
     public static boolean isOnline(Activity activity) {
         ConnectivityManager cm =
                 (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
