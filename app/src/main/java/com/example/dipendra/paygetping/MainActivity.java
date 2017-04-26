@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
@@ -20,17 +19,18 @@ import com.example.dipendra.paygetping.fragments.GetFragment;
 import com.example.dipendra.paygetping.fragments.PayFragment;
 import com.example.dipendra.paygetping.managingFriends.FriendsActivity;
 import com.example.dipendra.paygetping.utils.MyFragmentPagerAdapter;
+import com.example.dipendra.paygetping.utils.FabClickListener;
 import com.example.dipendra.paygetping.wallet.WalletsActivity;
 
 import java.util.ArrayList;
 
 public class MainActivity extends BaseActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, ViewPager.OnPageChangeListener {
 
     private MyFragmentPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
     private ListView mDrawerList;
-
+    private FloatingActionButton fab;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -45,18 +45,10 @@ public class MainActivity extends BaseActivity
         arrayList.add(new GetFragment());
 
     }
-
     private void initialize(){
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
+        fab = (FloatingActionButton) findViewById(R.id.fabs);
+        FabClickListener listener = new FabClickListener(this);
+        fab.setOnClickListener(listener);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -75,7 +67,9 @@ public class MainActivity extends BaseActivity
         mViewPager.setAdapter(mSectionsPagerAdapter);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
+        mViewPager.addOnPageChangeListener(this);
     }
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -107,5 +101,20 @@ public class MainActivity extends BaseActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+
     }
 }

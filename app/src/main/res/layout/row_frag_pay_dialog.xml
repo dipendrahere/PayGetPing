@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="5dp"
+    android:id="@+id/click_row_pay_dialog"
+    android:layout_margin="5dp">
+
+    <TextView
+        android:text="TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:textSize="18dp"
+        android:textColor="@color/colorAccent"
+        android:paddingBottom="4dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/checked_row_pay_name" />
+
+    <CheckedTextView
+        android:paddingTop="25dp"
+        android:text="ansjsdv"
+        android:id="@+id/checked_row_pay_id"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:checkMark="?android:attr/listChoiceIndicatorMultiple"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+</RelativeLayout>

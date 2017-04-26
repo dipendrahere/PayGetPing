@@ -42,6 +42,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fabs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="@dimen/fab_margin"
+            app:srcCompat="@android:drawable/ic_delete" />
 
     </android.support.design.widget.CoordinatorLayout>
 
@@ -57,6 +64,7 @@
         app:headerLayout="@layout/nav_header_main"
         app:menu="@menu/activity_main_drawer"
         app:background="@color/trans"/>
+
 
 
     </android.support.v4.widget.DrawerLayout>
