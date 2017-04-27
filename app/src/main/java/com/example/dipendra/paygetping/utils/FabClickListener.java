@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.example.dipendra.paygetping.MainActivity;
 import com.example.dipendra.paygetping.R;
+import com.example.dipendra.paygetping.models.Transaction;
 import com.example.dipendra.paygetping.models.User;
 import com.firebase.ui.database.FirebaseListAdapter;
 import com.google.firebase.database.DatabaseReference;
@@ -29,6 +30,7 @@ import java.util.ArrayList;
 public class FabClickListener implements View.OnClickListener{
     private Activity activity;
     private ArrayList<User> added;
+    private ArrayList<Transaction> list;
     public FabClickListener(){
 
     }
@@ -40,8 +42,6 @@ public class FabClickListener implements View.OnClickListener{
     @Override
     public void onClick(View view) {
 
-        final String amount;
-        final String description;
         if(view.getId() == R.id.fabs){
             View v = LinearLayout.inflate(activity, R.layout.pay_alert_dialog, null);
             final AlertDialog.Builder builder = new AlertDialog.Builder(activity);
@@ -79,7 +79,7 @@ public class FabClickListener implements View.OnClickListener{
         }
     }
 
-    private void onPositiveClick(final int amount, String description) {
+    private void onPositiveClick(final int amount, final String description) {
         View v = LinearLayout.inflate(activity, R.layout.share_transaction_dialog, null);
         final AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setView(v);
@@ -116,11 +116,29 @@ public class FabClickListener implements View.OnClickListener{
         };
         friends.setAdapter(adapter);
         friends.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-        builder.setPositiveButton("hello", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+                DatabaseReference ref = Constants.getDatabase().getReference().child("wallets").child(((MainActivity) activity).getCurrentList().getPushId()).child("transactions");
+                int count=0;
+                list = new ArrayList<Transaction>();
+                for(int it = 0; it < added.size(); it++){
+                    if(added.get(it)!=null){
+                        count++;
+                    }
+                }
+                final int amt = amount/count;
                 for (int it = 0; it < added.size();it++){
-
+                    if(added.get(it) != null) {
+                        Transaction t = new Transaction();
+                        t.setAmount(amt);
+                        t.setDescription(description);
+                        t.setFrom(((MainActivity) activity).getUser());
+                        t.setTo(added.get(it));
+                        String key = ref.push().getKey();
+                        if(!t.getTo().getEncodedEmail().equalsIgnoreCase(((MainActivity) activity).getUser().getEncodedEmail()))
+                            ref.child(key).setValue(t);
+                    }
                 }
             }
         });

@@ -10,7 +10,19 @@ public class Transaction {
     private User to;
     private User from;
     private int amount;
+    private boolean done;
     private String description;
+
+    public Transaction(){
+        done = false;
+    }
+    public boolean isDone() {
+        return done;
+    }
+
+    public void setDone(boolean done) {
+        this.done = done;
+    }
 
     public User getFrom() {
         return from;

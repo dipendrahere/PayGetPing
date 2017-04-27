@@ -3,6 +3,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.dipendra.paygetping.fragments.PayFragment">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/emptynotifier"
+        android:textColor="@color/darkgray"
+        android:textSize="50dp"
+        android:gravity="center"
+        android:text="You owe\n nobody"
+        android:textAlignment="center"/>
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"

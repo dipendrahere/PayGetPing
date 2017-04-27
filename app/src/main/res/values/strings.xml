@@ -11,4 +11,5 @@
     <string name="title_activity_add_friends">Search Your Friend</string>
     <string name="title_activity_add_user_to_list">People Already Added</string>
     <string name="title_activity_search_friend">Find Your Friend</string>
+    <string name="Rs">\u20B9</string>
 </resources>
